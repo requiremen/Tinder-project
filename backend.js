@@ -78,6 +78,32 @@ app.get("/currentuser",authmiddleware,async (req,res)=>{
     }
 
 })
+//updation logic for user to update there bio and age
+app.put("/updateuser",authmiddleware, async (req, res) => {
+    const userid = req.userid;
+    const bio = req.body.bio;
+    const age = req.body.age;
+  try {
+    const updatedUser = await users.findByIdAndUpdate(
+     userid,
+     {bio,age},
+    
+      { new: true }
+    ).select("-password");
+    if(updatedUser){
+        return res.status(200).json({
+            username:updatedUser.username,
+            bio:updatedUser.bio,
+            age:updatedUser.age
+
+        })
+    }
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+//deleting the user bio and age//add karenge baad me kabhi
 
 app.listen(port,()=>{
     console.log(`app is running on ${port}`)
