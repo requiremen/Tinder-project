@@ -60,6 +60,24 @@ app.get("/test",authmiddleware,(req,res)=>{
         username:req.username
     })
 })
+//getting current logged in user details
+app.get("/currentuser",authmiddleware,async (req,res)=>{
+    const userid = req.userid;
+    try{
+         const user = await users.findById(userid).select("-password");
+    if(user){
+        return res.status(200).json({
+
+            username:user.username
+        })
+    }
+    }catch(err){
+        return res.status(500).json({
+            msg:"internal server error"
+        })
+    }
+
+})
 
 app.listen(port,()=>{
     console.log(`app is running on ${port}`)
