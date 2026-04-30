@@ -51,6 +51,15 @@ app.post("/login",async (req,res)=>{
         })
     }
 })
+//test route for checking the authmiddleware
+const { authmiddleware }= require("./authmiddleware");
+app.get("/test",authmiddleware,(req,res)=>{
+    return res.status(200).json({
+        msg:"this is a protected route",
+        userid:req.userid,
+        username:req.username
+    })
+})
 
 app.listen(port,()=>{
     console.log(`app is running on ${port}`)
