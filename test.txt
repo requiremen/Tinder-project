@@ -1,0 +1,11 @@
+{
+    "msg": "swipe saved",
+    "swipe": {
+        "fromUser": "69f35165ca149c065d5e5466",
+        "toUser": "69f4265a8b47b239752cbd43",
+        "type": "like",
+        "_id": "69f426aa8b47b239752cbd45",
+        "__v": 0
+    }
+}
+//swipe route is working
