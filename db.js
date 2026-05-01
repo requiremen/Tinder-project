@@ -28,10 +28,12 @@ const swipeschema = new mongoose.Schema({
 
     }
 })
+const Swipe = mongoose.model("swipes",swipeschema)
 
 const User = mongoose.model("users", userschema);
 
 module.exports = {
   connectDB,
-  users: User
+  users: User,
+  swipes:Swipe
 };
