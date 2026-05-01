@@ -105,33 +105,64 @@ app.put("/updateuser",authmiddleware, async (req, res) => {
 });
 //deleting the user bio and age//add karenge baad me kabhi
 //swipe logic route // will have to test the route
-app.post("/swipe",authmiddleware,async(req,res)=>{
+//swipe logic route
+app.post("/swipe", authmiddleware, async (req, res) => {
     const userid = req.userid;
-    try{
-        const {touserid,type}=req.body;
-        if(touserid===userid){
+    try {
+        const { touserid, type } = req.body;
+        if (touserid === userid) {
             return res.status(400).json({
-                msg:"you cannot swipe yourself"
+                msg: "you cannot swipe yourself"
             })
         }
         const swipe = await swipes.create({
-            fromUser:userid,
-            toUser:touserid,
+            fromUser: userid,
+            toUser: touserid,
             type
-        
-    })
-    return res.status(200).json({
-        msg:"swipe saved",
-        swipe:swipe
-    })
-    }catch(err){
+        })
+        if (type === "like" && touserid) {
+            const existinglike = await swipes.findOne({
+                fromUser: touserid,
+                toUser: userid,
+                type: "like"
+            })
+
+            if (existinglike) {
+                const existingMatch = await matches.findOne({
+                    users: { $all: [userid, touserid] }
+                });
+
+                if (!existingMatch) {
+                    const newMatch = await matches.create({
+                        users: [userid, touserid]
+                    });
+
+                    return res.status(200).json({
+                        msg: "swipe saved and it's a match!",
+                        swipe: swipe,
+                        match: newMatch
+                    })
+                } else {
+                    return res.status(200).json({
+                        msg: "swipe saved and match already exists",
+                        swipe: swipe,
+                        match: existingMatch
+                    })
+                }
+            }
+        }
+        res.json({
+            msg: "swipe saved",
+            swipe: swipe
+        })
+
+    } catch (err) {
         res.status(500).json({
             error: err.message
         })
     }
-    
 })
-
+//updated the swipe logic with matches
 app.listen(port,()=>{
     console.log(`app is running on ${port}`)
 })
